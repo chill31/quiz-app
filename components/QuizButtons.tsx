@@ -33,7 +33,10 @@ export default function QuizButtons() {
           onChange={(e) => setInput(e.target.value)}
           radius="sm"
         />
-        <Button className={`[padding-block:1.7rem_!important] ${input.length === 0 ? 'text-gray-500 pointer-events-none' : ''}`} onPress={() => redirect('/quiz/' + input)}>Go</Button>
+        <Button className={`[padding-block:1.7rem_!important] ${input.length === 0 ? 'text-gray-500 pointer-events-none' : ''}`} onPress={() => {
+          if(input.length === 0) return;
+          redirect('/quiz/' + input);
+        }}>Go</Button>
       </div>
     </div>
   );
