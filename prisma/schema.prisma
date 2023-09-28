@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+model Quiz {
+  id        String     @id @unique @default(uuid())
+  title     String
+  questions Question[]
+}
+
+model Question {
+  id      String   @id @unique @default(uuid())
+  text    String
+  quiz    Quiz     @relation(fields: [quizId], references: [id])
+  quizId  String
+  answer  Int
+  options Option[]
+}
+
+model Option {
+  id         Int
+  text       String   @unique
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId String
+  isCorrect  Boolean  @default(false)
+}
