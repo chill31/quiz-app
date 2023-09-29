@@ -11,9 +11,11 @@ datasource db {
 }
 
 model Quiz {
-  id        String     @id @unique @default(uuid())
-  title     String
-  questions Question[]
+  id          String     @id @unique @default(uuid())
+  title       String
+  description String
+  questions   Question[]
+  authorId    String
 }
 
 model Question {

@@ -1,12 +1,30 @@
 import Container from "@/components/Container";
 import Title from "@/components/Title";
+import NewQuizForm from "@/components/NewQuizForm";
 
-export default function CreateQuiz() {
+import { currentUser, SignIn } from "@clerk/nextjs";
 
-  return (
-    <Container>
-      <Title>Create Quiz</Title>
-    </Container>
-  )
+export default async function CreateQuiz() {
+
+  const user = await currentUser();
+
+  if(!user) {
+    return (
+      <Container>
+        <Title>Create Quiz</Title>
+        <p>You need to sign it to create a quiz</p>
+        <SignIn afterSignInUrl={'/create-quiz'} />
+      </Container>
+    )
+  } else {
+
+    return (
+      <Container>
+        <Title>Create Quiz</Title>
+        <NewQuizForm />
+      </Container>
+    )
+
+  }
 
 }

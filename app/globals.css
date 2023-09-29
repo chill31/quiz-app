@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.cl-card {
+  @apply bg-black/20;
+}
+
+[data-sign-out-button] {
+  @apply bg-gray-600 p-2 px-7 rounded-lg;
+}

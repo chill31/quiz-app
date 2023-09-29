@@ -20,11 +20,12 @@ export default function QuizButtons() {
       <Button onPress={() => redirect('/create-quiz')}>
         <BsPlus className="text-xl" /> Create Quiz
       </Button>
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-2 sm:hidden">
         <hr className="w-[45vw] max-sm:w-[37vw]" />
         OR
         <hr className="w-[45vw] max-sm:w-[37vw]" />
       </div>
+      <span className="max-sm:hidden">OR</span>
       <div className="flex items-center justify-center gap-2">
         <Input
           label="Enter quiz id..."

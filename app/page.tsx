@@ -4,11 +4,16 @@ import Title from "@/components/Title";
 
 export default function Home() {
   return (
-    <Container>
-      <Title>Quiz</Title>
-      <p className="mx-4 text-center max-sm:mx-2">Create a quiz by pressing on the button below or enter a quiz id to take that quiz.</p>
+    <Container className="justify-center">
+      <div className="flex flex-col gap-4 items-center justify-center">
+        <Title>Quiz</Title>
+        <p className="mx-4 text-center max-sm:mx-2">
+          Create a quiz by pressing on the button below or enter a quiz id to
+          take that quiz.
+        </p>
+      </div>
 
       <QuizButtons />
     </Container>
-  )
+  );
 }
