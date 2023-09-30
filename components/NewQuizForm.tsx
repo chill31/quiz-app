@@ -9,7 +9,11 @@ import { Tooltip } from "@nextui-org/tooltip";
 import { BsCheckLg, BsPlus, BsTrash } from "react-icons/bs";
 import toast from "react-hot-toast";
 
+import {useRouter} from 'next/navigation'
+
 export default function NewQuizForm({ URL }: { URL: string }) {
+
+  const router = useRouter();
 
   const maxQuestions = 15;
   const maxOptions = 5;
@@ -109,12 +113,23 @@ export default function NewQuizForm({ URL }: { URL: string }) {
   }
 
   function createQuiz() {
-    console.log(questions);
+    setConfirmBtnIsLoading(true);
     fetch(URL + '/api/create/', {
       method: 'POST',
       body: JSON.stringify({title: quizTitle, description: quizDesc, questions: questions}),
     }).then(res => res.text()).then(data => {
-      console.log(data);
+      
+      if(data.endsWith("400")) {
+        toast.error("A quiz with that data already exists. Try changing title or description.");
+      } else if(data.endsWith("500")) {
+        toast.error("Something went wrong. Try again later.");
+      } else {
+        toast.success("Quiz created successfully.");
+        router.push('/dashboard');
+      }
+
+      setConfirmBtnIsLoading(true);
+      
     })
   }
 

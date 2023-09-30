@@ -28,9 +28,9 @@ model Question {
 }
 
 model Option {
-  id         Int @id @unique @default(sequence())
-  text       String   @unique
-  question   Question @relation(fields: [questionId], references: [id])
-  questionId String
-  isCorrect  Boolean  @default(false)
+  id         Int      @id @unique @default(sequence()) // prisma generated ID
+  text       String
+  question   Question @relation(fields: [questionId], references: [id]) // question relation
+  questionId String // prisma generated ID
+  isCorrect  Boolean  @default(false) // means whether THIS specific option is correct or not (true, false);
 }
