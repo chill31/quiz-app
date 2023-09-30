@@ -28,7 +28,7 @@ model Question {
 }
 
 model Option {
-  id         Int
+  id         Int @id @unique @default(sequence())
   text       String   @unique
   question   Question @relation(fields: [questionId], references: [id])
   questionId String
