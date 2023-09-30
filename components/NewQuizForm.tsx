@@ -108,14 +108,15 @@ export default function NewQuizForm({ URL }: { URL: string }) {
     setQuestions(newQuestions);
   }
 
-  // function createQuiz() {
-  //   fetch(URL + '/api/create/', {
-  //     method: 'POST',
-  //     body: JSON.stringify({title: quizTitle, description: quizDesc, questions: questions}),
-  //   }).then(res => res.json()).then(data => {
-  //     console.log(data);
-  //   })
-  // }
+  function createQuiz() {
+    console.log(questions);
+    fetch(URL + '/api/create/', {
+      method: 'POST',
+      body: JSON.stringify({title: quizTitle, description: quizDesc, questions: questions}),
+    }).then(res => res.text()).then(data => {
+      console.log(data);
+    })
+  }
 
   if (!quizTitleIsEntered) {
     return (
@@ -282,7 +283,7 @@ export default function NewQuizForm({ URL }: { URL: string }) {
         </div>
 
         {/* add create quiz on press thing. */}
-        <Button color={'success'} isLoading={confirmBtnIsLoading}>Confirm</Button>
+        <Button color={'success'} isLoading={confirmBtnIsLoading} onPress={() => createQuiz()}>Confirm</Button>
       </QuizContainer>
     );
   }
