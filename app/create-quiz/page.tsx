@@ -21,7 +21,7 @@ export default async function CreateQuiz() {
     return (
       <Container>
         <Title>Create Quiz</Title>
-        <NewQuizForm />
+        <NewQuizForm URL={process.env.URL ?? 'https://chill31-quiz.vercel.app'} />
       </Container>
     )
 

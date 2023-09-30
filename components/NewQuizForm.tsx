@@ -4,27 +4,12 @@ import { useState } from "react";
 import QuizContainer from "./QuizContainer";
 import Button from "./Button";
 import QuizInput from "./QuizInput";
-import { Checkbox, Tooltip } from "@nextui-org/react";
+import { Checkbox } from "@nextui-org/checkbox";
+import { Tooltip } from "@nextui-org/tooltip";
+import { BsCheckLg, BsPlus, BsTrash } from "react-icons/bs";
+import toast from "react-hot-toast";
 
-export default function NewQuizForm() {
-
-  // function to generate default set of questions + options.
-  const generateQuestions = (n: number) => {
-    const questionsArray = [];
-    for (let i = 0; i < n; i++) {
-      const questionObject = {
-        question: `Question ${i + 1}`,
-        options: Array.from({ length: 5 }, (value, index) => {
-          return {
-            option: `Option ${index + 1}`,
-            isCorrect: index === 0,
-          };
-        }),
-      };
-      questionsArray.push(questionObject);
-    }
-    return questionsArray;
-  };
+export default function NewQuizForm({ URL }: { URL: string }) {
 
   const maxQuestions = 15;
   const maxOptions = 5;
@@ -36,153 +21,269 @@ export default function NewQuizForm() {
   const [quizDesc, setQuizDesc] = useState("");
   const [quizDescIsEntered, setQuizDescIsEntered] = useState(false);
 
-  const [questionsAmounIstEntered, setQuestionsAmountIsEntered] = useState(false);
-  const [questionsAmount, setQuestionsAmount] = useState(5);
+  const [confirmBtnIsLoading, setConfirmBtnIsLoading] = useState(false);
+
+  // defining option object to put in the question object type for better checking.
+  type optionObj = {
+    option: string;
+    isCorrect: boolean;
+  };
+
+  // defining question object type to put in the quiz type for better checking.
+  type questionObj = {
+    question: string;
+    options: optionObj[];
+  };
+
+  type QuizObj = questionObj[];
 
   const [questionsEntered, setQuestionsEntered] = useState(false);
-  const [questions, setQuestions] = useState<any>([]);
-
-  const exampleQues = [
+  // setting default 2 questions with each 2 options.
+  const [questions, setQuestions] = useState<QuizObj>([
     {
-      question: "what is the answer to question?",
+      question: "Question 1",
       options: [
         {
-          option: "this is option 1",
-          isCorrect: false,
-        },
-        {
-          option: "this is option 2",
-          isCorrect: false,
-        },
-        {
-          option: "this is option 3",
+          option: "option 1 of question 1",
           isCorrect: true,
         },
         {
-          option: "this is option 4",
+          option: "option 2 of question 1",
           isCorrect: false,
-        }
-      ]
+        },
+      ],
     },
     {
-      question: "what is the answer to question 2?",
+      question: "Question 2",
       options: [
         {
-          option: "this is option 1",
+          option: "option 1 of question 2",
           isCorrect: true,
         },
         {
-          option: "this is option 2",
+          option: "option 2 of question 2",
           isCorrect: false,
         },
+      ],
+    },
+  ]);
+
+  function newQuestion() {
+    let newQuestions = [...questions];
+    if (newQuestions.length >= maxQuestions) return;
+    newQuestions.push({
+      question: "Question " + (newQuestions.length + 1),
+      options: [
         {
-          option: "this is option 3",
-          isCorrect: false,
+          isCorrect: true,
+          option: "Option 1 of Question " + (newQuestions.length + 1),
         },
         {
-          option: "this is option 4",
           isCorrect: false,
-        }
-      ]
-    }
-  ]
+          option: "Option 2 of Question " + (newQuestions.length + 1),
+        },
+      ],
+    });
+    setQuestions(newQuestions);
+  }
+
+  function deleteQuestion(quesKey: number) {
+    let newQuestions = [...questions];
+    if (newQuestions.length <= 2) return;
+    newQuestions.splice(quesKey, 1);
+    setQuestions(newQuestions);
+  }
+
+  function newOption(quesKey: number) {
+    let newQuestions = [...questions];
+    if (newQuestions[quesKey].options.length >= maxOptions) return;
+    newQuestions[quesKey].options.push({
+      isCorrect: false,
+      option:
+        "Option " +
+        (newQuestions[quesKey].options.length + 1) +
+        " of Question " +
+        (quesKey + 1),
+    });
+    setQuestions(newQuestions);
+  }
+
+  // function createQuiz() {
+  //   fetch(URL + '/api/create/', {
+  //     method: 'POST',
+  //     body: JSON.stringify({title: quizTitle, description: quizDesc, questions: questions}),
+  //   }).then(res => res.json()).then(data => {
+  //     console.log(data);
+  //   })
+  // }
 
   if (!quizTitleIsEntered) {
     return (
-      <QuizContainer pageState={'quiz_title'}>
-        <QuizInput onInput={(e) => setQuizTitle((e.target as HTMLInputElement).value)} value={quizTitle} label={'Enter quiz title'} />
-        <Button className={`${quizTitle.length < 1 ? 'pointer-events-none text-gray-400' : ''}`} onPress={() => {
-          if(quizTitle.length < 1) return;
-          console.log(quizTitle);
-          setQuizTitleIsEntered(true)
-        }}>Next</Button>
+      <QuizContainer pageState={"quiz_title"}>
+        <QuizInput
+          onInput={(e) => setQuizTitle((e.target as HTMLInputElement).value)}
+          value={quizTitle}
+          label={"Enter quiz title"}
+          variant={"flat"}
+        />
+        <Button
+          className={`${
+            quizTitle.length < 1 ? "pointer-events-none text-gray-400" : ""
+          }`}
+          onPress={() => {
+            if (quizTitle.length < 1) return;
+            setQuizTitleIsEntered(true);
+          }}
+        >
+          Next
+        </Button>
       </QuizContainer>
-    )
+    );
   }
 
-  if(!quizDescIsEntered && quizTitleIsEntered) {
-
+  if (!quizDescIsEntered && quizTitleIsEntered) {
     return (
-      <QuizContainer pageState={'quiz_description'}>
-        <QuizInput onInput={(e) => setQuizDesc((e.target as HTMLInputElement).value)} value={quizDesc} label={'Enter quiz description'} />
-        <Button className={`${quizDesc.length < 1 ? 'pointer-events-none text-gray-400' : ''}`} onPress={() => {
-          if(quizDesc.length < 1) return;
-          console.log(quizDesc);
-          setQuizDescIsEntered(true)
-        }}>Next</Button>
+      <QuizContainer pageState={"quiz_description"}>
+        <QuizInput
+          onInput={(e) => setQuizDesc((e.target as HTMLInputElement).value)}
+          value={quizDesc}
+          label={"Enter quiz description"}
+          textarea={true}
+          variant={"flat"}
+        />
+        <Button
+          className={`${
+            quizDesc.length < 1 ? "pointer-events-none text-gray-400" : ""
+          }`}
+          onPress={() => {
+            if (quizDesc.length < 1) return;
+            setQuizDescIsEntered(true);
+          }}
+        >
+          Next
+        </Button>
       </QuizContainer>
-    )
-
+    );
   }
 
-  if(!questionsAmounIstEntered && quizTitleIsEntered && quizDescIsEntered) {
-      return (
-        <QuizContainer pageState="quiz_description">
-          <QuizInput
-            className="w-[25rem] max-w-[95vw]"
-            label={"Enter amount of questions (1-15)"}
-            value={`${questionsAmount}`}
-            type={'number'}
-            onInput={(e) => {
-
-              if (isNaN(Number((e.target as HTMLInputElement).value))) {
-                setQuestionsAmount((prev) => prev);
-                setQuestions(generateQuestions(questionsAmount));
-                return;
-              };
-
-              if (Number((e.target as HTMLInputElement).value) > maxQuestions) return setQuestionsAmount(maxQuestions);
-
-              if (Number((e.target as HTMLInputElement).value) < 1) return setQuestionsAmount(1);
-
-              setQuestionsAmount(Number((e.target as HTMLInputElement).value));
-
-            }}
-          ></QuizInput>
-          <Button onPress={() => setQuestionsAmountIsEntered(true)}>
-            Next
-          </Button>
-        </QuizContainer>
-      );
-  }
-
-  if(!questionsEntered && questionsAmounIstEntered && quizTitleIsEntered && quizDescIsEntered) {
-
+  if (!questionsEntered && quizTitleIsEntered && quizDescIsEntered) {
     return (
       <QuizContainer pageState="quiz_question">
-
-        {/* converting number into array, whose items are the number from 1 - 'n', just to map it */}
-        {Array.from({ length: questionsAmount }, (_, index) => index + 1).map((number, key) => (
-          <div key={key} className="w-[35rem] max-w-[92vw] px-2 py-4 flex flex-col gap-8 items-start justify-start bg-white/10 rounded-lg">
-            <h3 className="text-xl">Question {number}</h3>
+        {questions.map((question, quesKey) => (
+          <div
+            key={quesKey}
+            className="w-[35rem] max-w-[92vw] px-2 py-4 flex flex-col gap-8 items-start justify-start bg-white/10 rounded-lg relative"
+          >
+            <button className="text-xl text-red-500 absolute top-4 right-4" onClick={() => deleteQuestion(quesKey)}>
+              <BsTrash className="cursor-pointer" />
+            </button>
+            <QuizInput
+              className="mt-5"
+              variant={"underlined"}
+              value={question.question}
+              label={"Enter question"}
+              size={"lg"}
+              onInput={(e) => {
+                setQuestions((prev) => {
+                  const newQuestions = [...prev];
+                  newQuestions[quesKey].question = (
+                    e.target as HTMLInputElement
+                  ).value;
+                  return newQuestions;
+                });
+              }}
+            ></QuizInput>
             <div className="flex flex-col gap-2">
+              {question.options.map((option, optKey) => (
+                <span
+                  key={optKey}
+                  className="flex items-center justify-start gap-2"
+                >
+                  <QuizInput
+                    className="!max-w-[75vw]"
+                    value={option.option}
+                    label={`Enter Option ${optKey + 1}`}
+                    onInput={(e) =>
+                      setQuestions((prev) => {
+                        const newQuestions = [...prev];
+                        newQuestions[quesKey].options[optKey].option = (
+                          e.target as HTMLInputElement
+                        ).value;
+                        return newQuestions;
+                      })
+                    }
+                  />
+                  <Tooltip
+                    content="if this option is correct"
+                    closeDelay={0}
+                    delay={0}
+                  >
+                    <div>
+                      <Checkbox
+                        isSelected={option.isCorrect}
+                        onInput={(e) => {
+                          // uncheck all the other options checkbox and then check this one.
+                          const newQuestions = [...questions];
+                          newQuestions[quesKey].options.forEach((option) => {
+                            option.isCorrect = false;
+                          });
+                          newQuestions[quesKey].options[optKey].isCorrect =
+                            true;
 
-              <span className="flex items-center justify-start gap-2">
-                <QuizInput className="!max-w-[75vw]" value="" label={`Enter Option 1`} />
-                  <Checkbox checked />
-              </span>
-              <span className="flex items-center justify-start gap-2">
-                <QuizInput className="!max-w-[75vw]" value="" label={`Enter Option 2`} />
-                  <Checkbox checked />
-              </span>
-              <span className="flex items-center justify-start gap-2">
-                <QuizInput className="!max-w-[75vw]" value="" label={`Enter Option 3`} />
-                  <Checkbox checked />
-              </span>
-              <span className="flex items-center justify-start gap-2">
-                <QuizInput className="!max-w-[75vw]" value="" label={`Enter Option 4`} />
-                  <Checkbox checked />
-              </span>
-              <span className="flex items-center justify-start gap-2">
-                <QuizInput className="!max-w-[75vw]" value="" label={`Enter Option 5`} />
-                  <Checkbox checked />
-              </span>
+                          setQuestions(newQuestions);
+                        }}
+                      />
+                    </div>
+                  </Tooltip>
+                </span>
+              ))}
+              <Button onPress={() => newOption(quesKey)} className="mt-5">
+                <BsPlus />
+                Add Option
+              </Button>
             </div>
           </div>
         ))}
-
+        <Button onPress={() => newQuestion()}>New Question</Button>
+        <Button onPress={() => setQuestionsEntered(true)}>Confirm</Button>
       </QuizContainer>
-    )
+    );
+  }
 
+  if (questionsEntered && quizTitleIsEntered && quizDescIsEntered) {
+    return (
+      <QuizContainer pageState="quiz_final">
+        <h3 className="text-4xl mt-5 text-center">Almost done.</h3>
+        <p className="text-center mx-4">
+          Just one click away from creating your quiz. You have finished entering data for your quiz. Here&apos;s your quiz preview. Questions
+          and options are only shown in numbers.
+        </p>
+
+        {/* show quiz title, description, question numbers and options */}
+        <div className="w-[35rem] max-w-[92vw] px-2 py-4 flex flex-col gap-8 items-start justify-start bg-white/10 rounded-lg relative">
+          <h3 className="text-2xl">{quizTitle}</h3>
+          <p className="text-lg">{quizDesc}</p>
+          {questions.map((question, quesKey) => (
+            <div
+              key={quesKey}
+              className="w-[35rem] max-w-[92%] px-2 py-4 flex flex-col gap-8 items-start justify-start bg-white/10 rounded-lg relative"
+            >
+              <h4 className="text-xl">Question {quesKey + 1}</h4>
+              <div className="flex flex-col gap-2 w-full">
+                {question.options.map((option, optKey) => (
+                  <span key={optKey} className={`w-full flex gap-2 justify-start items-center overflow-x-scroll whitespace-nowrap relative border-1 border-transparent ${option.isCorrect ? 'border-white' : ''}`}>
+                    <span className="overflow-scroll max-sm:!w-[12rem] w-[70%]">{option.option}</span>
+                    {option.isCorrect && <BsCheckLg className='text-green-500 text-xl absolute top-[50%] translate-y-[-50%] right-1 ' />}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* add create quiz on press thing. */}
+        <Button color={'success'} isLoading={confirmBtnIsLoading}>Confirm</Button>
+      </QuizContainer>
+    );
   }
 }

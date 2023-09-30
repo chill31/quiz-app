@@ -14,6 +14,8 @@ import { Providers } from "@/components/Providers";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 
+import { Toaster } from "react-hot-toast";
+
 export default function RootLayout({
   children,
 }: {
@@ -23,7 +25,10 @@ export default function RootLayout({
     <ClerkProvider appearance={{ baseTheme: dark }}>
       <html lang="en" className="dark">
         <body className={inter.className}>
-          <Providers>{children}</Providers>
+          <Providers>
+            {children}
+            <Toaster position="top-center" />
+          </Providers>
         </body>
       </html>
     </ClerkProvider>

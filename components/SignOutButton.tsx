@@ -2,12 +2,15 @@
 
 import { SignOutButton as SignOutBtn } from "@clerk/nextjs";
 import {useRouter} from 'next/navigation'
+import Button from "./Button";
 
 export default function SignOutButton() {
 
   const router = useRouter();
 
   return (
-    <SignOutBtn signOutCallback={() => router.push('/')} data-sign-out-button />
+    <Button>
+    <SignOutBtn signOutCallback={() => router.push('/')} />
+    </Button>
   )
 }

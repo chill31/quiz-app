@@ -1,18 +1,26 @@
 "use client";
 
 import Button from "@/components/Button";
-import { Input } from "@nextui-org/react";
+import { Input } from "@nextui-org/input";
 import { BsPlus } from "react-icons/bs";
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function QuizButtons() {
+export default function QuizButtons({ dashboard = false }: { dashboard?: boolean }) {
   const router = useRouter();
   const [input, setInput] = useState("");
 
   function redirect(url: string) {
     router.push(url);
+  }
+
+  if(dashboard) {
+    return (
+      <Button onPress={() => redirect('/create-quiz')}>
+        <BsPlus className='text-xl' /> Create Quiz
+      </Button>
+    )
   }
 
   return (
