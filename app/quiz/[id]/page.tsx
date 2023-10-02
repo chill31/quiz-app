@@ -10,7 +10,6 @@ export default async function Quiz({ params }: { params: { id: string } }) {
   });
   const recieved = await res.json();
 
-  console.log(recieved); // add this line to check the data being returned
 
   const {quiz, questions} = recieved;
   if(!quiz || !questions) {

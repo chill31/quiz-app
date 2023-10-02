@@ -33,7 +33,6 @@ export default function QuizCard({
     setCurrentQuestion((prev) => prev + 1);
     setSelectedOption(0);
     setEnteredData(fnData);
-    console.log(fnData);
   }
 
   function finishQuiz() {
@@ -46,7 +45,6 @@ export default function QuizCard({
     });
     setEnteredData(fnData);
     setQuizDone(true);
-    console.log(fnData);
   }
 
   function calculateFraction(value: number, max: number) {
