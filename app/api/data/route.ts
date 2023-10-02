@@ -1,38 +1,41 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-type ResponseQuestionObject = any[];
-type ResponseOptionsObject = {[key: string]: any}[];
+type ResponseQuestionObject = {
+  question: any;
+  options: any[];
+};
 
 export async function POST(req: Request) {
-  const {id} = await req.json();
+  const { id } = await req.json();
   const quiz = await prisma.quiz.findUnique({
     where: {
-      id: id
-    }
+      id: id,
+    },
   });
   const foundQuestions = await prisma.question.findMany({
     where: {
-      quizId: id
-    }
+      quizId: id,
+    },
   });
 
-  const questions: ResponseQuestionObject = [];
-  const options: ResponseOptionsObject = [];
+  const questions: ResponseQuestionObject[] = [];
 
   await Promise.all(
     foundQuestions.map(async (question) => {
-      questions.push(question);
       const foundOptions = await prisma.option.findMany({
         where: {
           question: question,
         },
       });
-      options.push({
-        questionId: question.id,
+      questions.push({
+        question: question,
         options: foundOptions,
       });
     })
   );
-  return new Response(JSON.stringify({ quiz, questions, options }), {status: 200});
+
+  return new Response(JSON.stringify({ quiz, questions }), {
+    status: 200,
+  });
 }

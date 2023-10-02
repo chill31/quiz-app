@@ -12,9 +12,11 @@ type btnProps = ButtonProps & {quizId: string; URL: string}
 export default function DeleteButton(props: btnProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [contentVisible, setContentVisible] = useState(true);
 
   function deleteQuiz() {
     setLoading(true);
+    setContentVisible(false);
     fetch(props.URL + '/api/delete/', {
       method: 'POST',
       body: JSON.stringify({
@@ -23,9 +25,11 @@ export default function DeleteButton(props: btnProps) {
     }).then(res => res.json()).then(data => {
       if(data.msg.endsWith("[400]")) {
         setLoading(false);
+        setContentVisible(true);
         toast.error("Failed to delete quiz. Try again later");
       } else {
         setLoading(false);
+        setContentVisible(true);
         toast.success("Quiz deleted successfully");
         router.refresh();
       }
@@ -34,7 +38,7 @@ export default function DeleteButton(props: btnProps) {
 
   return (
     <Button onPress={() => deleteQuiz()} isIconOnly={props.isIconOnly ?? true} isLoading={loading} {...props}>
-      <BsTrash />
+      {contentVisible ? <BsTrash /> : ''}
     </Button>
   );
 }

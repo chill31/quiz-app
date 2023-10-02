@@ -42,7 +42,7 @@ export default async function Dashboard() {
             </div>
           ))}
           {data.quizzes === undefined && (
-            <span className="text-xl text-gray-300 text-center">You have not created any quizzes.</span>
+            <span className="text-xl text-gray-300 text-center">You have not created any quizzes. Reload if you think this is a problem</span>
           )}
         </div>
         <div className="flex flex-col items-start justify-start gap-6 max-dt:items-center">
