@@ -38,7 +38,7 @@ export default async function Dashboard() {
               <p>{quiz.description}</p>
               <span>Amount of questions: {quiz._count.questions}</span>
 
-              <CopyButton copyText={quiz.id} content={'Copy link'} className="mt-6"></CopyButton>
+              <CopyButton copyText={process.env.url + '/quiz/' + quiz.id} content={'Copy link'} className="mt-6"></CopyButton>
             </div>
           ))}
           {data.quizzes === undefined && (
