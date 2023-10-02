@@ -21,7 +21,7 @@ model Quiz {
 model Question {
   id      String   @id @unique @default(uuid())
   text    String
-  quiz    Quiz     @relation(fields: [quizId], references: [id])
+  quiz    Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
   quizId  String
   answer  Int
   options Option[]
@@ -30,7 +30,7 @@ model Question {
 model Option {
   id         Int      @id @unique @default(sequence()) // prisma generated ID
   text       String
-  question   Question @relation(fields: [questionId], references: [id]) // question relation
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade) // question relation
   questionId String // prisma generated ID
   isCorrect  Boolean  @default(false) // means whether THIS specific option is correct or not (true, false);
 }

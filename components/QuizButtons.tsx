@@ -41,6 +41,7 @@ export default function QuizButtons({ dashboard = false }: { dashboard?: boolean
           value={input}
           onChange={(e) => setInput(e.target.value)}
           radius="sm"
+          placeholder="aaaaaaaa-bbbb-4ccc-dddd-eeeeeeeeeeee format"
         />
         <Button className={`[padding-block:1.7rem_!important] ${input.length === 0 ? 'text-gray-500 pointer-events-none' : ''}`} onPress={() => {
           if(input.length === 0) return;

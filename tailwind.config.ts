@@ -17,6 +17,9 @@ const config: Config = {
       },
       colors: {
         'bg': '#1C2124',
+      },
+      screens: {
+        'dt': "1000px"
       }
     },
 
