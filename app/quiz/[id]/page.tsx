@@ -1,5 +1,6 @@
 import Container from '@/components/Container';
 import QuizCard from '@/components/QuizCard';
+import Title from '@/components/Title';
 
 export default async function Quiz({ params }: { params: { id: string } }) {
 
@@ -15,7 +16,7 @@ export default async function Quiz({ params }: { params: { id: string } }) {
   if(!quiz || !questions) {
     return (
       <Container>
-        <h1>404</h1>
+        <Title>404</Title>
         <p className="text-center mx-4">quiz not found. Ask the person who sent you this quiz id for a new or correct one.</p>
       </Container>
     )
@@ -23,7 +24,7 @@ export default async function Quiz({ params }: { params: { id: string } }) {
 
   return (
     <Container>
-      <h1>{quiz.title}</h1>
+      <Title>{quiz.title}</Title>
       <QuizCard questions={questions} quiz={quiz}></QuizCard>
     </Container>
   )
