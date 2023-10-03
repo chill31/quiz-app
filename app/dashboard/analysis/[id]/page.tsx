@@ -33,7 +33,6 @@ export default async function Analysis({ params }: { params: { id: string } }) {
     const data = await res.json();
     if (user.id === data.analysis.userId) {
       const { analysis, questions } = data;
-      console.log(questions);
       return (
         <Container>
           <div className="flex flex-col w-full items-center justify-center gap-4">
