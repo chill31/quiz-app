@@ -42,7 +42,7 @@ export default async function Analysis({ params }: { params: { id: string } }) {
               </span>{" "}
               {analysis.quizTitle}
             </Title>
-            <p>{analysis.quizDescription}</p>
+            <p className="mx-4 max-sm:mx-1 text-center">{analysis.quizDescription}</p>
           </div>
 
           <div className="w-[50rem] max-w-[95vw] min-h-[25rem] h-fit bg-black/20 flex flex-col gap-4 items-center justify-center py-4 px-2 rounded-md">
