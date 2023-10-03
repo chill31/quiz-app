@@ -177,7 +177,7 @@ export default function QuizCard({
                   <span
                     className={`p-1 h-fit aspect-[1] rounded-full bg-white/10 `}
                   >
-                    {k}
+                    {k + 1}
                   </span>
                   <span>{option.text}</span>
                 </span>
@@ -228,7 +228,7 @@ export default function QuizCard({
                   }`}
                 >
                   <span
-                    className={`p-1 h-fit aspect-[1] rounded-full bg-white/10 flex items-center justify-center`}
+                    className={`p-1 h-fit aspect-[1] rounded-full bg-white/10 flex items-center justify-center min-w-max`}
                   >
                     Q. {k + 1}
                   </span>

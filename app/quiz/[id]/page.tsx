@@ -25,6 +25,7 @@ export default async function Quiz({ params }: { params: { id: string } }) {
   return (
     <Container>
       <Title>{quiz.title}</Title>
+      <p className='mx-4 max-sm:mx-1 text-center'>{quiz.description}</p>
       <QuizCard questions={questions} quiz={quiz} URL={process.env.URL ?? 'https://chill31-quiz.vercel.app'}></QuizCard>
     </Container>
   )
