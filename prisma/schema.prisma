@@ -28,9 +28,31 @@ model Question {
 }
 
 model Option {
-  id         Int      @id @unique @default(sequence()) // prisma generated ID
+  id         Int      @id @unique @default(sequence())
   text       String
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade) // question relation
-  questionId String // prisma generated ID
-  isCorrect  Boolean  @default(false) // means whether THIS specific option is correct or not (true, false);
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String
+  isCorrect  Boolean  @default(false)
+}
+
+model Analysis {
+  id              String             @id @unique @default(uuid())
+  quizId          String
+  quizTitle       String
+  quizDescription String
+  correct         Int
+  total           Int
+  Question        AnalysisQuestion[]
+  userId          String
+}
+
+model AnalysisQuestion {
+  id                  String   @unique @default(uuid())
+  text                String
+  answer              Int
+  Analysis            Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  analysisId          String
+  incorrectOptionText String?
+  correctOptionText   String
+  isCorrect           Boolean
 }

@@ -125,6 +125,7 @@ export default function NewQuizForm({ URL }: { URL: string }) {
         toast.error("Something went wrong. Try again later.");
       } else {
         toast.success("Quiz created successfully.");
+        router.refresh();
         router.push('/dashboard');
       }
 
