@@ -26,6 +26,7 @@ export default function AnalysisEndButtons({
     }).then(res => res.json()).then(data => {
       if(data.msg.endsWith('[200]')) {
         toast.success('Analysis deleted successfully');
+        router.refresh();
         redirect('/dashboard');
       } else {
         toast.error('Error deleting analysis');

@@ -118,7 +118,7 @@ export default function QuizCard({
     }).then(res => res.json()).then(data => {
       if(data.msg.endsWith("success")) {
         toast.success("Analysis saved to history");
-        return router.push(`/dashboard/analysis/${data.analysis.id}`);
+        return router.push(`/analysis/${data.analysis.id}`);
       }
       return toast.error("Error saving analysis to history");
     })
