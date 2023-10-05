@@ -49,7 +49,6 @@ const defaultQuizObj: QuizObj = [
 ];
 
 import { useState } from "react";
-import QuizContainer from "./QuizContainer";
 import Button from "./Button";
 import QuizInput from "./QuizInput";
 import { Checkbox } from "@nextui-org/checkbox";
@@ -187,44 +186,25 @@ export default function NewQuizForm({ URL }: { URL: string }) {
   }
 
   function createQuiz() {
-    async function handleQuizCreation() {
-      try {
-        setConfirmBtnIsLoading(true);
-
-        const response = await fetch(URL + "/api/create/", {
-          method: "POST",
-          body: JSON.stringify({
-            title: quizTitle,
-            description: quizDesc,
-            questions: questions,
-          }),
-        });
-
-        const data = await response.text();
-
-        if (data.endsWith("400")) {
-          toast.error(
-            "A quiz with that data already exists. Try changing title or description."
-          );
-        } else if (data.endsWith("500")) {
-          toast.error("Something went wrong. Try again later.");
-        } else {
-          toast.success("Quiz created successfully.");
-          router.refresh();
-          router.push("/dashboard");
-        }
-
-        setConfirmBtnIsLoading(false);
-      } catch (error) {
-        console.error("Error creating quiz:", error);
-        toast.error(
-          "An error occurred while creating the quiz. Please try again."
-        );
-        setConfirmBtnIsLoading(false);
+    setConfirmBtnIsLoading(true);
+    fetch(URL + '/api/create/', {
+      method: 'POST',
+      body: JSON.stringify({title: quizTitle, description: quizDesc, questions: questions}),
+    }).then(res => res.text()).then(data => {
+      
+      if(data.endsWith("400")) {
+        toast.error("A quiz with that data already exists. Try changing title or description.");
+      } else if(data.endsWith("500")) {
+        toast.error("Something went wrong. Try again later.");
+      } else {
+        toast.success("Quiz created successfully.");
+        router.refresh();
+        router.push('/dashboard');
       }
-    }
 
-    handleQuizCreation();
+      setConfirmBtnIsLoading(true);
+      
+    })
   }
 
   if (!quizTitleIsEntered) {
