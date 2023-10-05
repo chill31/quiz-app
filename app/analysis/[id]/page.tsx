@@ -84,7 +84,6 @@ export default async function Analysis({ params }: { params: { id: string } }) {
                   : "border-green-500"
               } h-[10rem] aspect-square rounded-full bg-white/10 border-[10px] flex flex-col gap-2 items-center justify-center mt-6`}
             >
-              {/* show amount of correct questions done */}
               <span className="text-[2.3rem] font-bold">
                 {analysis.correct}
               </span>

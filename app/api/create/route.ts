@@ -1,6 +1,4 @@
-// DO NOT TOUCH THIS FILE
-// IF YOU DO, MARK ZUCKERBURG WILL KILL YOU
-
+// Import necessary modules and types
 import { currentUser } from "@clerk/nextjs";
 import { PrismaClient } from "@prisma/client";
 
@@ -41,42 +39,50 @@ export async function POST(req: Request) {
     return correctOptions;
   }
 
-  try {
-    const newQuiz = await prisma.quiz.create({
-      data: {
-        title,
-        description,
-        authorId: user?.id ?? "abcdef",
-        questions: {
-          create: questions.map((question, index) => ({
-            answer: correctOption({ questions }).indexOf(
-              question.options.findIndex((option) => option.isCorrect)
-            ),
-            text: question.question,
-            options: {
-              create: [
-                ...question.options.map((option, index) => ({
-                  text: option.option,
-                  isCorrect: option.isCorrect,
-                })),
-              ],
-            },
-          })),
+  async function createQuiz() {
+    try {
+      const newQuiz = await prisma.quiz.create({
+        data: {
+          title,
+          description,
+          authorId: user?.id ?? "abcdef",
+          questions: {
+            create: questions.map((question, index) => ({
+              answer: correctOption({ questions }).indexOf(
+                question.options.findIndex((option) => option.isCorrect)
+              ),
+              text: question.question,
+              options: {
+                create: [
+                  ...question.options.map((option, index) => ({
+                    text: option.option,
+                    isCorrect: option.isCorrect,
+                  })),
+                ],
+              },
+            })),
+          },
         },
-      },
-    });
+      });
 
-    // THE ERROR CODES AT THE END OF THE STRING ARE INTENTIONAL. DO NOT REMOVE THEM.
-
-    return new Response("successfully created blog 200", { status: 200 });
-  } catch (e: any) {
-    if(e.code === 'P2002') {
-      console.log(e);
-      return new Response('A quiz with that title already exists 400', { status: 400 })
+      return { success: true, message: "Quiz created successfully." };
+    } catch (e: any) {
+      if (e.code === "P2002") {
+        console.log(e);
+        return { success: false, message: "A quiz with that title already exists." };
+      }
+      console.error(e);
+      return { success: false, message: "An error occurred while creating the quiz." };
+    } finally {
+      await prisma.$disconnect();
     }
-    console.log(e);
-    return new Response(`${e} 500`, {status: 500});
-  } finally {
-    await prisma.$disconnect();
   }
+
+  return createQuiz().then((result) => {
+    if (result.success) {
+      return new Response(result.message, { status: 200 });
+    } else {
+      return new Response(result.message, { status: 500 });
+    }
+  });
 }

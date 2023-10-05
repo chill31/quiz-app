@@ -1,4 +1,4 @@
-import { BsHash, BsCardText, Bs123, BsQuestion, BsCheck2 } from "react-icons/bs";
+import { BsHash, BsCardText, BsQuestion, BsCheck2 } from "react-icons/bs";
 
 type PageState =
   | "quiz_title"
