@@ -7,6 +7,8 @@ import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
+import ReactMarkdown from "react-markdown";
+
 // for analysis function
 
 type Option = {
@@ -27,8 +29,8 @@ type EnteredData = {
   actualCorrect: number;
   actualCorrectText: string;
   questionText: string;
-  selectedOptionText: string
-}[]
+  selectedOptionText: string;
+}[];
 
 export default function QuizCard({
   questions,
@@ -61,9 +63,12 @@ export default function QuizCard({
       actualCorrect: questions[currentQuestion].options.findIndex(
         (option: any) => option.isCorrect
       ),
-      actualCorrectText: questions[currentQuestion].options.find((option: any) => option.isCorrect).text,
+      actualCorrectText: questions[currentQuestion].options.find(
+        (option: any) => option.isCorrect
+      ).text,
       questionText: questions[currentQuestion].question.text,
-      selectedOptionText: questions[currentQuestion].options[selectedOption].text
+      selectedOptionText:
+        questions[currentQuestion].options[selectedOption].text,
     });
     setCurrentQuestion((prev) => prev + 1);
     setSelectedOption(0);
@@ -79,9 +84,12 @@ export default function QuizCard({
       actualCorrect: questions[currentQuestion].options.findIndex(
         (option: any) => option.isCorrect
       ),
-      actualCorrectText: questions[currentQuestion].options.find((option: any) => option.isCorrect).text,
+      actualCorrectText: questions[currentQuestion].options.find(
+        (option: any) => option.isCorrect
+      ).text,
       questionText: questions[currentQuestion].question.text,
-      selectedOptionText: questions[currentQuestion].options[selectedOption].text
+      selectedOptionText:
+        questions[currentQuestion].options[selectedOption].text,
     });
     setEnteredData(fnData);
     setQuizDone(true);
@@ -104,25 +112,25 @@ export default function QuizCard({
     quizId: string;
     quizTitle: string;
   }) {
-
-    fetch(URL + '/api/analysis/save', {
-      method: 'POST',
+    fetch(URL + "/api/analysis/save", {
+      method: "POST",
       body: JSON.stringify({
         correct,
         total,
         quizDescription,
         quizId,
         quizTitle,
-        questions: enteredData
-      })
-    }).then(res => res.json()).then(data => {
-      if(data.msg.endsWith("success")) {
-        toast.success("Analysis saved to history");
-        return router.push(`/analysis/${data.analysis.id}`);
-      }
-      return toast.error("Error saving analysis to history");
+        questions: enteredData,
+      }),
     })
-
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.msg.endsWith("success")) {
+          toast.success("Analysis saved to history");
+          return router.push(`/analysis/${data.analysis.id}`);
+        }
+        return toast.error("Error saving analysis to history");
+      });
   }
 
   if (!quizDone) {
@@ -159,7 +167,22 @@ export default function QuizCard({
             Question {currentQuestion + 1}
           </h2>
           <span className="text-[1.1rem] text-gray-300">
-            {questions[currentQuestion].question.text}
+            <ReactMarkdown
+              allowedElements={[
+                "p",
+                "span",
+                "code",
+                "pre",
+                "img",
+                "b",
+                "em",
+                "i",
+                "div",
+                "strong",
+              ]}
+            >
+              {questions[currentQuestion].question.text}
+            </ReactMarkdown>
           </span>
 
           <div className="flex flex-col gap-3 w-full items-start justify-start">
@@ -179,7 +202,9 @@ export default function QuizCard({
                   >
                     {k + 1}
                   </span>
-                  <span>{option.text}</span>
+                  <ReactMarkdown allowedElements={["strong", "em", "p", "code"]}>
+                    {option.text}
+                  </ReactMarkdown>
                 </span>
               )
             )}
@@ -219,7 +244,23 @@ export default function QuizCard({
           <div className="flex flex-col gap-3 w-full items-start justify-start">
             {enteredData.map((data: any, k: number) => (
               <React.Fragment key={k}>
-                <span className="mt-4 text-gray-300 text-[1.1rem] italic">{questions[data.questionId].question.text}</span>
+                <ReactMarkdown
+                  allowedElements={[
+                    "p",
+                    "span",
+                    "code",
+                    "pre",
+                    "img",
+                    "b",
+                    "em",
+                    "i",
+                    "div",
+                    "strong",
+                  ]}
+                  className="mt-4 text-gray-300 text-[1.1rem] italic"
+                >
+                  {questions[data.questionId].question.text}
+                </ReactMarkdown>
                 <span
                   className={`flex items-center justify-start gap-4 bg-black/25 px-2 py-3 w-full hover:bg-gray-200/10 rounded-md transition-colors ${
                     data.selectedOption === data.actualCorrect
@@ -233,19 +274,24 @@ export default function QuizCard({
                     Q. {k + 1}
                   </span>
                   <span>
+                    <ReactMarkdown allowedElements={['p', 'span', 'code', 'pre', 'img', 'b', 'em', 'i', 'div', 'strong']}>
                     {
                       questions[data.questionId].options[data.selectedOption]
                         .text
                     }
-                    <br />
+                    </ReactMarkdown>
                     {data.selectedOption !== data.actualCorrect ? (
-                      <span>
+                      <span className="inline-flex gap-2">
                         Correct:{" "}
-                        {
-                          questions[data.questionId].options.find(
-                            (option: any) => option.isCorrect
-                          )?.text
-                        }
+                        <ReactMarkdown
+                          allowedElements={["strong", "em", "p", "code"]}
+                        >
+                          {
+                            questions[data.questionId].options.find(
+                              (option: any) => option.isCorrect
+                            )?.text
+                          }
+                        </ReactMarkdown>
                       </span>
                     ) : null}
                   </span>
@@ -297,12 +343,14 @@ export default function QuizCard({
             className="mt-5"
             onClick={() => {
               createAnalysis({
-                correct: enteredData.filter((data: any) => data.selectedOption === data.actualCorrect).length,
+                correct: enteredData.filter(
+                  (data: any) => data.selectedOption === data.actualCorrect
+                ).length,
                 quizDescription: quiz.description,
                 quizId: quiz.id,
                 quizTitle: quiz.title,
                 total: enteredData.length,
-              })
+              });
             }}
           >
             Save to History

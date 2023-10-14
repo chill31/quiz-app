@@ -1,11 +1,10 @@
-import Button from "@/components/Button";
 import Container from "@/components/Container";
-import AnalysisEndButtons from "@/components/DeleteAnalysis";
-import DeleteAnalysisButton from "@/components/DeleteAnalysis";
+import AnalysisEndButtons from "@/components/AnalysisEndButtons";
 import Title from "@/components/Title";
 import { currentUser } from "@clerk/nextjs";
 import React from "react";
-import { BsTrash } from "react-icons/bs";
+
+import ReactMarkdown from 'react-markdown';
 
 export default async function Analysis({ params }: { params: { id: string } }) {
   const user = await currentUser();
@@ -49,9 +48,7 @@ export default async function Analysis({ params }: { params: { id: string } }) {
             <div className="flex flex-col gap-3 w-full items-start justify-start mt-6">
               {questions.map((question: any, k: any) => (
                 <React.Fragment key={k}>
-                  <span className="mt-4 text-gray-300 text-[1.1rem] italic">
-                    {question.text}
-                  </span>
+                <ReactMarkdown  allowedElements={['p', 'span', 'code', 'pre', 'img', 'b', 'em', 'i', 'div', 'strong']} className="mt-4 text-gray-300 text-[1.1rem] italic">{question.text}</ReactMarkdown>
                   <span
                     className={`flex items-center justify-start gap-4 bg-black/25 px-2 py-3 w-full hover:bg-gray-200/10 rounded-md transition-colors ${
                       question.isCorrect ? "!bg-green-500/50" : "!bg-red-600/50"
@@ -63,10 +60,9 @@ export default async function Analysis({ params }: { params: { id: string } }) {
                       Q. {k + 1}
                     </span>
                     <span>
-                      {question.incorrectOptionText}
-                      <br />
+                      <ReactMarkdown allowedElements={['strong', 'em', 'p', 'code']}>{question.incorrectOptionText}</ReactMarkdown>
                       {question.isCorrect === false ? (
-                        <span>Correct: {question.correctOptionText}</span>
+                        <span className="inline-flex gap-2">Correct: <ReactMarkdown allowedElements={['strong', 'em', 'p', 'code']}>{question.correctOptionText}</ReactMarkdown></span>
                       ) : null}
                     </span>
                   </span>
